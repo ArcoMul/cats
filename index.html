@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Cats</title>
+    <style>
+        img {
+            max-width: 400px;
+        }
+    </style>
+</head>
+<body>
+    <div id="cats"></div>
+    <script>
+        async function getFiles(path) {
+            const resp = await fetch(`https://api.github.com/repos/ArcoMul/cats/contents/${path}`, { 
+                method: 'get', 
+                headers: new Headers({
+                    'Authorization': 'token 0757ce86b525672f6598906754e218fd1846bd96', 
+                }), 
+            })
+            const json = await resp.json();
+        }
+        function render() {
+            try {
+                const files = getFiles('cats');
+                document.getElementById('cats').innerHTML = files.map(img => `<img src="https://arcomul.github.io/cats/${img.path}" />`).join('');
+            } catch (err) {
+                console.error('error:', err);
+            }
+        }
+        render();
+    </script>
+</body>
+</html>
