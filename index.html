@@ -18,20 +18,39 @@
             const resp = await fetch(`https://api.github.com/repos/ArcoMul/cats/contents/${path}`, { 
                 method: 'get', 
                 headers: new Headers({
-                    'Authorization': 'token 0757ce86b525672f6598906754e218fd1846bd96', 
+                    'Authorization': 'token be691ca3c7159c7cf69a81697911548eaa875350', 
                 }), 
             })
-            const json = await resp.json();
+            return resp.json();
         }
-        function render() {
+        async function render() {
             try {
-                const files = getFiles('cats');
-                document.getElementById('cats').innerHTML = files.map(img => `<img src="https://arcomul.github.io/cats/${img.path}" />`).join('');
+                const files = await getFiles('cats');
+                console.log('fetched files', files);
+                document.getElementById('cats').innerHTML = files.map(img => `<div><img src="https://arcomul.github.io/cats/${img.path}" /><span>${img.path}</span></div>`).join('');
             } catch (err) {
                 console.error('error:', err);
             }
         }
+
+        // Let's render on page load
         render();
+
+        // Re-render every 5 seconds
+        setInterval(() => {
+            console.log('re-render');
+            render();
+        }, 5000);
+
+        // Reload every 30 seconds
+        let seconds = 30;
+        setTimeout(() => {
+            location.reload(); 
+        }, seconds * 1000)
+        setInterval(() => {
+            seconds--;
+            console.log('reloading in', seconds)
+        }, 1000);
     </script>
 </body>
 </html>
