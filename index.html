@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Cats</title>
+    <style>
+        body {
+            background-color: gray;
+        }
+
+        img {
+            max-width: 400px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="cats"></div>
+    <script>
+        async function getFiles(path) {
+            const resp = await fetch(`http://cats-api.arcomul.nl?path=${path}`);
+
+            return resp.json();
+        }
+        async function render() {
+            try {
+                const files = await getFiles('cats');
+                console.log('fetched files', files);
+                document.getElementById('cats').innerHTML = files.map(img => `<div><img src="https://arcomul.github.io/cats/${img.path}" /><span>${img.path}</span></div>`).join('');
+            } catch (err) {
+                console.error('error:', err);
+            }
+        }
+
+        // Let's render on page load
+        render();
+
+        // Re-render every 5 seconds (for new images)
+        setInterval(() => {
+            console.log('re-render');
+            render();
+        }, 5000);
+
+        // Reload every 30 seconds (for css/html updates)
+        let seconds = 30;
+        setTimeout(() => {
+            location.reload();
+        }, seconds * 1000)
+        setInterval(() => {
+            seconds--;
+            console.log('reloading in', seconds)
+        }, 1000);
+    </script>
+</body>
+
+</html>
